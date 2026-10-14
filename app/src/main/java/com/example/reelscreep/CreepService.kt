@@ -14,7 +14,7 @@ class CreepService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val pkg = event?.packageName?.toString() ?: return
 
-        if (pkg != "com.instagram.android" || pkg != "com.google.android.youtube") return
+        if (pkg != "com.instagram.android" && pkg != "com.google.android.youtube") return
 
         val now = System.currentTimeMillis()
 
@@ -28,6 +28,9 @@ class CreepService : AccessibilityService() {
 
     }
 
+    override fun onInterrupt() {
+    }
+
     private fun getScreenIds(node: AccessibilityNodeInfo?, ids: MutableSet<String>) {
         if (node == null) return
 
@@ -39,9 +42,6 @@ class CreepService : AccessibilityService() {
         for (i in 0 until node.childCount) {
             getScreenIds(node.getChild(i), ids)
         }
-    }
-
-    override fun onInterrupt() {
     }
 
 }
