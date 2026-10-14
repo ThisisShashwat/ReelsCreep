@@ -47,6 +47,11 @@ class CreepService : AccessibilityService() {
             setDoomScrollState(false)
             return
         }
+        val pm = getSystemService(POWER_SERVICE) as android.os.PowerManager
+        if (!pm.isInteractive) {
+            setDoomScrollState(false)
+            return
+        }
 
         val ids = mutableSetOf<String>()
         getVisibleScreenIds(rootInActiveWindow, ids)
@@ -60,9 +65,7 @@ class CreepService : AccessibilityService() {
         val inYoutubeShorts = pkg == "com.google.android.youtube" &&
                 "reel_watch_fragment_root" in ids
 
-        setDoomScrollState(inInstagramReels || inYoutubeShorts)
-
-
+        setDoomScrollState(inInstagramReels || inYoutubeShorts
 
     }
 
