@@ -14,6 +14,11 @@ class CreepService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        val pkg = event?.packageName?.toString() ?: return
+
+        if (pkg == "com.instagram.android" || pkg == "com.google.android.youtube") {
+            android.util.Log.d("CREEP", "in, $pkg and ${event.eventType}")
+        }
     }
 
     override fun onInterrupt() {
