@@ -7,6 +7,7 @@ import android.media.Image
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 
 @SuppressLint("AccessibilityPolicy")
@@ -23,6 +24,7 @@ class CreepService : AccessibilityService() {
             setImageResource(R.drawable.image)
             scaleType = ImageView.ScaleType.FIT_XY
             alpha = 0f
+            visibility = android.view.View.INVISIBLE
         }
 
         val paramas = WindowManager.LayoutParams(
@@ -65,22 +67,46 @@ class CreepService : AccessibilityService() {
         val inYoutubeShorts = pkg == "com.google.android.youtube" &&
                 "reel_watch_fragment_root" in ids
 
-        setDoomScrollState(inInstagramReels || inYoutubeShorts
+        setDoomScrollState(inInstagramReels || inYoutubeShorts)
 
     }
 
+    private val fullCreepDuration = 15000L
+
     private fun setDoomScrollState(active: Boolean) {
         if (isDoomScrolling == active) return
-
         isDoomScrolling = active
+
+        val img = overlayImage ?: return
+
+        val currentAlpha = img.alpha
 
         if (active) {
             android.util.Log.d("CREEP", "DOOOOOOMSCROLLING")
-            overlayImage?.animate()?.alpha(1f)?.setDuration(15000L)?.start()
+
+            val timeToFull = ((1f - currentAlpha) * fullCreepDuration).toLong()
+
+            img.visibility = android.view.View.VISIBLE
+
+
+            img.animate()
+                .alpha(1f)
+                .setDuration(timeToFull)
+                .setInterpolator(LinearInterpolator())
+                .start()
+
         } else {
             android.util.Log.d("CREEP", "stopped")
-            overlayImage?.animate()?.cancel()
-            overlayImage?.alpha = 0f
+
+            val timeToZero = (currentAlpha * fullCreepDuration).toLong()
+
+            img.visibility = android.view.View.INVISIBLE
+
+            img.animate()
+                .alpha(0f)
+                .setDuration(timeToZero)
+                .setInterpolator(LinearInterpolator())
+                .start()
         }
     }
 
