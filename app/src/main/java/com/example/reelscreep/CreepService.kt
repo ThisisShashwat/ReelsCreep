@@ -2,20 +2,41 @@ package com.example.reelscreep
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
+import android.graphics.PixelFormat
+import android.media.Image
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
-import android.widget.Toast
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.ImageView
 
 @SuppressLint("AccessibilityPolicy")
 class CreepService : AccessibilityService() {
 
-    private var lastLogTime = 0L
-
+    private var overlayImage: ImageView? = null
     private var isDoomScrolling = false
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         android.util.Log.d("CREEP", "we are so alive baby")
+
+        overlayImage = ImageView(this).apply {
+            setImageResource(R.drawable.image)
+            scaleType = ImageView.ScaleType.FIT_XY
+            alpha = 0f
+        }
+
+        val paramas = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            PixelFormat.TRANSLUCENT
+        )
+
+        val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+        wm.addView(overlayImage, paramas)
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -41,6 +62,8 @@ class CreepService : AccessibilityService() {
 
         setDoomScrollState(inInstagramReels || inYoutubeShorts)
 
+
+
     }
 
     private fun setDoomScrollState(active: Boolean) {
@@ -50,8 +73,11 @@ class CreepService : AccessibilityService() {
 
         if (active) {
             android.util.Log.d("CREEP", "DOOOOOOMSCROLLING")
+            overlayImage?.animate()?.alpha(1f)?.setDuration(15000L)?.start()
         } else {
             android.util.Log.d("CREEP", "stopped")
+            overlayImage?.animate()?.cancel()
+            overlayImage?.alpha = 0f
         }
     }
 
