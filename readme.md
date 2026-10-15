@@ -6,6 +6,10 @@ so like... Do you find yourself scrolling too much?
 
 INTRODUCING, REELS CREEP!
 
+# video here !!!
+https://www.instagram.com/reel/DefoYm1I4_P/?xtok=MTBvMWJoYzV6cHJyOQ==
+
+
 You start watching reels or shorts, and it slowly starts showing an overlay that disappears when u get out of the reels...
 
 it wont disturb you in regular youtube videos or insta chats.. only when u are scrolling shorts/reels
